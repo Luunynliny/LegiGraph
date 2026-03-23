@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  /* Background */
+  --bg-base: hsl(0 0% 98%);
+  --bg-surface: hsl(0 0% 96%);
+  --bg-overlay: hsl(0 0% 94%);
+
+  /* Borders */
+  --border: hsl(0 0% 86%);
+  --border-focus: hsl(0 0% 60%);
+
+  /* Text */
+  --text-primary: hsl(0 0% 10%);
+  --text-secondary: hsl(0 0% 42%);
+  --text-muted: hsl(0 0% 62%);
+
+  /* Brand */
+  --color-primary: #3B6FD4;
+  --color-accent: #F59E0B;
+
+  /* Code colors */
+  --color-civil: #3B6FD4;
+  --color-penal: #E85D4A;
+  --color-travail: #059669;
+  --color-commerce: #7C3AED;
+
+  /* Code colors (light tint, 12% opacity) */
+  --color-civil-tint: rgba(59, 111, 212, 0.10);
+  --color-penal-tint: rgba(232, 93, 74, 0.10);
+  --color-travail-tint: rgba(5, 150, 105, 0.10);
+  --color-commerce-tint: rgba(124, 58, 237, 0.10);
+
+  /* Typography */
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  /* Spacing */
+  --sidebar-width: 240px;
+  --panel-width: 320px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+}
+
+/* ─── Base reset ─────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-focus);
+}
+
+/* ─── Utility classes ────────────────────────────────────────────────────── */
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.border-hairline {
+  border: 0.5px solid var(--border);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
