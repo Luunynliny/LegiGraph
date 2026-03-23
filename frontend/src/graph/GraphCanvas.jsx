@@ -28,7 +28,7 @@ function currentAnimPos(anim, now) {
 }
 
 // ─── Inner loader component (must be inside SigmaContainer) ───────────────
-function GraphLoader({ expandedCodes, selectedArticleId, onNodeClick }) {
+function GraphLoader({ expandedCodes, hiddenCodes, selectedArticleId, onNodeClick }) {
   const loadGraph = useLoadGraph()
   const sigma = useSigma()
 
@@ -107,11 +107,13 @@ function GraphLoader({ expandedCodes, selectedArticleId, onNodeClick }) {
     const graph = new MultiGraph()
 
     Object.values(CODES).forEach((code) => {
+      if (hiddenCodes.has(code.id)) return
       graph.addNode(code.id, masterNodeAttrs(code, selectedArticleId === code.id))
     })
 
     // Active expanded nodes — use splat anim start pos if mid-animation
     expandedCodes.forEach((codeId) => {
+      if (hiddenCodes.has(codeId)) return
       const code = CODES[codeId]
       if (!code) return
       getArticlesByCode(codeId).forEach((article) => {
@@ -125,6 +127,7 @@ function GraphLoader({ expandedCodes, selectedArticleId, onNodeClick }) {
 
     // Collapsing nodes — use gather anim start pos if mid-animation
     collapsingCodesRef.current.forEach((codeId) => {
+      if (hiddenCodes.has(codeId)) return
       const code = CODES[codeId]
       if (!code) return
       getArticlesByCode(codeId).forEach((article) => {
@@ -139,6 +142,7 @@ function GraphLoader({ expandedCodes, selectedArticleId, onNodeClick }) {
     // Parent edges
     const visibleCodes = new Set([...expandedCodes, ...collapsingCodesRef.current])
     visibleCodes.forEach((codeId) => {
+      if (hiddenCodes.has(codeId)) return
       const code = CODES[codeId]
       if (!code) return
       getArticlesByCode(codeId).forEach((article) => {
@@ -165,7 +169,7 @@ function GraphLoader({ expandedCodes, selectedArticleId, onNodeClick }) {
     })
 
     return graph
-  }, [expandedCodes, selectedArticleId])
+  }, [expandedCodes, hiddenCodes, selectedArticleId])
 
   // ── React to expandedCodes changes ────────────────────────────────────
   useEffect(() => {
@@ -258,7 +262,7 @@ const sigmaSettings = {
 }
 
 // ─── GraphCanvas ──────────────────────────────────────────────────────────
-export function GraphCanvas({ expandedCodes, selectedArticleId, onNodeClick, sigmaRef }) {
+export function GraphCanvas({ expandedCodes, hiddenCodes, selectedArticleId, onNodeClick, sigmaRef }) {
   return (
     <SigmaContainer
       ref={sigmaRef}
@@ -267,6 +271,7 @@ export function GraphCanvas({ expandedCodes, selectedArticleId, onNodeClick, sig
     >
       <GraphLoader
         expandedCodes={expandedCodes}
+        hiddenCodes={hiddenCodes}
         selectedArticleId={selectedArticleId}
         onNodeClick={onNodeClick}
       />

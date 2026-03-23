@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, ChevronRight, Clock } from 'lucide-react'
+import { Search, ChevronRight, Clock, Eye, EyeOff } from 'lucide-react'
 import { ScrollArea } from './ui/ScrollArea'
 import { Separator } from './ui/Separator'
 import { CODES, ARTICLES, getArticlesByCode } from '../data/mockData'
@@ -15,28 +15,37 @@ function CodeDot({ color }) {
 }
 
 // ─── Code section ─────────────────────────────────────────────────────────
-function CodeSection({ code, isExpanded, onToggle, onArticleClick, selectedArticleId, history }) {
+function CodeSection({ code, isExpanded, isHidden, onToggle, onToggleVisibility, onArticleClick, selectedArticleId }) {
   const articles = getArticlesByCode(code.id)
 
   return (
-    <div>
-      <button
-        onClick={() => onToggle(code.id)}
-        className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-[var(--bg-overlay)] transition-colors rounded-md"
-      >
-        <CodeDot color={code.color} />
-        <span className="flex-1 text-[13px] font-medium text-[var(--text-primary)] truncate">
-          {code.label}
-        </span>
-        <span className="text-[11px] text-[var(--text-muted)] font-mono shrink-0">
-          {articles.length}
-        </span>
-        <ChevronRight
-          size={13}
-          className="shrink-0 text-[var(--text-muted)] transition-transform duration-150"
-          style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
-        />
-      </button>
+    <div style={{ opacity: isHidden ? 0.45 : 1, transition: 'opacity 150ms ease' }}>
+      <div className="flex items-center gap-1 pr-1">
+        <button
+          onClick={() => onToggle(code.id)}
+          className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2 text-left hover:bg-[var(--bg-overlay)] transition-colors rounded-md"
+        >
+          <CodeDot color={code.color} />
+          <span className="flex-1 text-[13px] font-medium text-[var(--text-primary)] truncate">
+            {code.label}
+          </span>
+          <span className="text-[11px] text-[var(--text-muted)] font-mono shrink-0">
+            {articles.length}
+          </span>
+          <ChevronRight
+            size={13}
+            className="shrink-0 text-[var(--text-muted)] transition-transform duration-150"
+            style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+          />
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleVisibility(code.id) }}
+          title={isHidden ? 'Afficher dans le graphe' : 'Masquer dans le graphe'}
+          className="shrink-0 w-6 h-6 flex items-center justify-center rounded transition-colors hover:bg-[var(--bg-overlay)] text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
+        >
+          {isHidden ? <EyeOff size={13} /> : <Eye size={13} />}
+        </button>
+      </div>
 
       {isExpanded && (
         <div className="mt-0.5 ml-3 pl-3 border-l border-[0.5px] border-[var(--border)]">
@@ -71,6 +80,8 @@ function CodeSection({ code, isExpanded, onToggle, onArticleClick, selectedArtic
 export function LeftSidebar({
   expandedCodes,
   onToggleCode,
+  hiddenCodes,
+  onToggleVisibility,
   selectedArticle,
   onArticleSelect,
   history,
@@ -179,7 +190,9 @@ export function LeftSidebar({
               key={code.id}
               code={code}
               isExpanded={expandedCodes.has(code.id)}
+              isHidden={hiddenCodes.has(code.id)}
               onToggle={onToggleCode}
+              onToggleVisibility={onToggleVisibility}
               onArticleClick={onArticleSelect}
               selectedArticleId={selectedArticle?.id}
             />

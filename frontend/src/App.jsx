@@ -11,6 +11,18 @@ export default function App() {
   // Which codes have their article nodes "splatted" open
   const [expandedCodes, setExpandedCodes] = useState(new Set())
 
+  // Which codes are hidden from the graph entirely
+  const [hiddenCodes, setHiddenCodes] = useState(new Set())
+
+  const handleToggleVisibility = useCallback((codeId) => {
+    setHiddenCodes((prev) => {
+      const next = new Set(prev)
+      if (next.has(codeId)) next.delete(codeId)
+      else next.add(codeId)
+      return next
+    })
+  }, [])
+
   // Currently selected article (or null)
   const [selectedArticle, setSelectedArticle] = useState(null)
 
@@ -98,6 +110,8 @@ export default function App() {
       <LeftSidebar
         expandedCodes={expandedCodes}
         onToggleCode={handleToggleCode}
+        hiddenCodes={hiddenCodes}
+        onToggleVisibility={handleToggleVisibility}
         selectedArticle={selectedArticle}
         onArticleSelect={handleArticleSelect}
         history={history}
@@ -108,6 +122,7 @@ export default function App() {
         <GraphCanvas
           sigmaRef={sigmaRef}
           expandedCodes={expandedCodes}
+          hiddenCodes={hiddenCodes}
           selectedArticleId={selectedArticle?.id}
           onNodeClick={handleNodeClick}
         />
